@@ -18,7 +18,7 @@ from pylive.mp4Info import Mp4Info
 import threading
 import json
 
-JadeLog = JadeLogging("log", Level="DEBUG")
+JadeLog = JadeLogging("log", Level="INFO")
 
 
 class MyThread(threading.Thread):
@@ -71,7 +71,7 @@ class LiveSpider(object):
                     name = str(content, encoding="utf-8").strip()
                     if name:
                         playUrl = self.spiderSearch(name)
-                        if len(name.strip()) > 0:
+                        if len(playUrl.strip()) > 0:
                             playJson[name] = playUrl
                             playList.append(("{},{}".format(name, playUrl) + "\n"))
                 with open(os.path.join(self.saveLivePath, "{}_live.txt".format(fileName)), "wb") as f1:
@@ -82,14 +82,13 @@ class LiveSpider(object):
 
                 with open(os.path.join(self.saveJsonPath, "{}_live.json".format(fileName)), "wb") as f2:
                     f2.write(json.dumps(playJson, indent=4, ensure_ascii=False).encode("utf-8"))
-            break
 
     def getParams(self, name):
         return {"search": f"{name}", "Submit": " "}
 
     def fetch(self, url, headers, data, verify):
         try:
-            res = requests.get(url, headers=headers, data=data, verify=verify, timeout=self.timeout)
+            res = requests.get(url, headers=headers, data=data, verify=verify )
             if res.status_code == 200:
                 self.reconnect = 0
                 return res

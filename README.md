@@ -11,3 +11,5 @@ pip install requirements.txt
 ```bash
 python main.py
 ```
+
+> 本地运行,Workflows无法获取直播链接
