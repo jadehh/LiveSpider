@@ -103,7 +103,7 @@ class LiveSpider(object):
                 JadeLog.ERROR("Get请求失败,超过最大重连次数,请检查连接:{}".format(url))
                 return None
         except Exception as e:
-            JadeLog.ERROR("Get请求失败,失败原因为:{}".format(e))
+            JadeLog.ERROR("Get请求失败")
             raise e
 
     def post(self, url, headers, data, cookies, verify):
@@ -122,7 +122,7 @@ class LiveSpider(object):
                 JadeLog.ERROR("Post请求失败,超过最大重连次数,请检查连接:{}".format(url))
                 return None
         except Exception as e:
-            JadeLog.ERROR("Post请求失败,失败原因为:{}".format(e))
+            JadeLog.ERROR("Post请求失败")
             raise e
 
     def m3u8Get(self, url):
