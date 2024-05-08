@@ -116,7 +116,7 @@ class LiveSpider(object):
                 time.sleep(self.sleepTime)
                 self.reconnect = self.reconnect + 1
                 JadeLog.WARNING("Post请求失败,尝试第{}次重连".format(self.reconnect))
-                return self.fetch(url, headers, data, verify)
+                return self.post(url, headers, data,cookies,verify)
             else:
                 self.reconnect = 0
                 JadeLog.ERROR("Post请求失败,超过最大重连次数,请检查连接:{}".format(url))
