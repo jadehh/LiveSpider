@@ -36,9 +36,9 @@ class LiveSpider(object):
     def __init__(self):
         self.siteUrl = "http://tonkiang.us"
         self.liveRoomPath = "liveRoom"
-        self.maxPage = 1
+        self.maxPage = 3
         self.maxReconnect = 3
-        self.maxTsDownloadTimes = 2
+        self.maxTsDownloadTimes = 3
         self.reconnect = 0
         self.sleepTime = 3
         self.timeout = 3
@@ -265,7 +265,7 @@ class LiveSpider(object):
             a = div.xpath(".//a/div")
             for element in div.xpath(".//tba"):
                 if element.text is not None:
-                    if (a[0].text.strip().lower() == name.lower()):
+                    if (a[0].text.strip().lower().replace("-","").replace("K","") == name.lower()):
                         m3u8List.append(element.text.strip())
         return m3u8List
 
@@ -281,7 +281,7 @@ class LiveSpider(object):
         return self.selectBestUrl(name, m3u8List)
 
     def run(self):
-        searchNameList = self.getSearchResult()
+        self.getSearchResult()
         JadeLog.release()
 
 
