@@ -261,11 +261,14 @@ class LiveSpider(object):
     def parseXML(self, name, html, m3u8List):
         root = etree.HTML(html)
         result_divs = root.xpath("//div[@class='resultplus']")
+        JadeLog.INFO(html)
+        JadeLog.INFO(len(result_divs))
         for div in result_divs:
             a = div.xpath(".//a/div")
             for element in div.xpath(".//tba"):
                 if element.text is not None:
                     if (a[0].text.strip().lower().replace("-","").replace("K","") == name.lower()):
+                        JadeLog.INFO(element.text.strip())
                         m3u8List.append(element.text.strip())
         return m3u8List
 
