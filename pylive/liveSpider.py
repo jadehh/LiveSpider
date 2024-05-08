@@ -43,7 +43,8 @@ class LiveSpider(object):
         self.sleepTime = 3
         self.timeout = 3
         self.maxSize = 1024 * 1024 * 5
-        self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"}
+        self.headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"}
         self.tmpPath = CreateSavePath("tmp")
         self.saveJsonPath = CreateSavePath("json")
         self.saveLivePath = CreateSavePath("live")
@@ -75,26 +76,29 @@ class LiveSpider(object):
                         playUrl = self.spiderSearch(name)
                         if len(playUrl.strip()) > 0:
                             playJson[name.lower()] = playUrl
-                            writeContent = '#EXTINF:-1 tvg-id="{}" tvg-name="{}" tvg-logo="{}" group-title="{}",CCTV1\nvideo://{}'.format(index,str(content, encoding="utf-8").strip(),"https://epg.112114.xyz/logo/{}.png".format(name),fileName,playUrl)
+                            writeContent = '#EXTINF:-1 tvg-id="{}" tvg-name="{}" tvg-logo="{}" group-title="{}",{}\nvideo://{}\n'.format(
+                                index, str(content, encoding="utf-8").strip(),
+                                "https://epg.112114.xyz/logo/{}.png".format(name), fileName,
+                                str(content, encoding="utf-8").strip(), playUrl)
                             playList.append(writeContent)
                             index = index + 1
                 playObj[fileName] = playList
 
         with open(os.path.join(self.saveLivePath, "live.txt".format(fileName)), "wb") as f1:
+            f1.write("#EXTM3U\n".encode("utf-8"))
             for key in playObj.keys():
-                f1.write("#EXTM3U\n".format(key).encode("utf-8"))
                 for playUrl in playObj[key]:
                     f1.write(playUrl.encode("utf-8"))
 
         with open(os.path.join(self.saveJsonPath, "live.json".format(fileName)), "wb") as f2:
-                f2.write(json.dumps(playJson, indent=4, ensure_ascii=False).encode("utf-8"))
+            f2.write(json.dumps(playJson, indent=4, ensure_ascii=False).encode("utf-8"))
 
     def getParams(self, name):
         return {"search": f"{name}", "Submit": " "}
 
     def fetch(self, url, headers, data, verify):
         try:
-            res = requests.get(url, headers=headers, data=data, verify=verify )
+            res = requests.get(url, headers=headers, data=data, verify=verify)
             if res.status_code == 200:
                 self.reconnect = 0
                 return res
@@ -121,7 +125,7 @@ class LiveSpider(object):
                 time.sleep(self.sleepTime)
                 self.reconnect = self.reconnect + 1
                 JadeLog.WARNING("Post请求失败,尝试第{}次重连".format(self.reconnect))
-                return self.post(url, headers, data,cookies,verify)
+                return self.post(url, headers, data, cookies, verify)
             else:
                 self.reconnect = 0
                 JadeLog.ERROR("Post请求失败,超过最大重连次数,请检查连接:{}".format(url))
@@ -249,9 +253,9 @@ class LiveSpider(object):
                     bestSpeed = speed
                     bestAspect = aspect
         JadeLog.INFO("名称为:{},最优播放链接为:{},速度为:{}MB/s,分辨率为:{},耗时:{}s".format(name, maxQulityUrl,
-                                                                                            ("%.2f" % bestSpeed),
-                                                                                            bestAspect, ("%.2f" % (
-                        time.time() - startTime))))
+                                                                                             ("%.2f" % bestSpeed),
+                                                                                             bestAspect, ("%.2f" % (
+                    time.time() - startTime))))
         return maxQulityUrl
 
     def parseXML(self, name, html, m3u8List):
