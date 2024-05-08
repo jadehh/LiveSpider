@@ -47,7 +47,7 @@ class LiveSpider(object):
         self.tmpPath = CreateSavePath("tmp")
         self.saveJsonPath = CreateSavePath("json")
         self.saveLivePath = CreateSavePath("live")
-        self.sortKeys = ["cctv", "lstv", "hktv"]
+        self.sortKeys = ["央视", "卫视", "港澳台"]
         super().__init__()
 
     def sortFileList(self, fileList):
@@ -63,6 +63,7 @@ class LiveSpider(object):
         fileList = self.sortFileList(os.listdir(self.liveRoomPath))
         playJson = {}
         playObj = {}
+        index = 1
         for fileName in fileList:
             playList = []
             with open(os.path.join(self.liveRoomPath, fileName), "rb") as f:
@@ -74,15 +75,16 @@ class LiveSpider(object):
                         playUrl = self.spiderSearch(name)
                         if len(playUrl.strip()) > 0:
                             playJson[name.lower()] = playUrl
-                            playList.append(("{},{}".format(name, playUrl) + "\n"))
+                            writeContent = '#EXTINF:-1 tvg-id="{}" tvg-name="{}" tvg-logo="{}" group-title="{}",CCTV1\nvideo://{}'.format(index,str(content, encoding="utf-8").strip(),"https://epg.112114.xyz/logo/{}.png".format(name),fileName,playUrl)
+                            playList.append(writeContent)
+                            index = index + 1
                 playObj[fileName] = playList
 
         with open(os.path.join(self.saveLivePath, "live.txt".format(fileName)), "wb") as f1:
             for key in playObj.keys():
-                f1.write("{},#genre#\n".format(key).encode("utf-8"))
+                f1.write("#EXTM3U\n".format(key).encode("utf-8"))
                 for playUrl in playObj[key]:
                     f1.write(playUrl.encode("utf-8"))
-                f1.write("\n".encode("utf-8"))
 
         with open(os.path.join(self.saveJsonPath, "live.json".format(fileName)), "wb") as f2:
                 f2.write(json.dumps(playJson, indent=4, ensure_ascii=False).encode("utf-8"))
