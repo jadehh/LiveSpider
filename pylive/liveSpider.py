@@ -38,7 +38,7 @@ class LiveSpider(object):
         self.liveRoomPath = "liveRoom"
         self.maxPage = 3
         self.maxReconnect = 3
-        self.maxTsDownloadTimes = 3
+        self.maxTsDownloadTimes = 1
         self.reconnect = 0
         self.sleepTime = 3
         self.timeout = 3
