@@ -259,6 +259,7 @@ class LiveSpider(object):
         return maxQulityUrl
 
     def parseXML(self, name, html, m3u8List):
+        JadeLog.INFO(html)
         root = etree.HTML(html)
         result_divs = root.xpath("//div[@class='resultplus']")
         for div in result_divs:
