@@ -61,8 +61,9 @@ class LiveSpider(object):
 
     def getSearchResult(self):
         fileList = self.sortFileList(os.listdir(self.liveRoomPath))
+        playJson = {}
+        playObj = {}
         for fileName in fileList:
-            playJson = {}
             playList = []
             with open(os.path.join(self.liveRoomPath, fileName), "rb") as f:
                 fileName = fileName.split(".")[0]
@@ -74,14 +75,17 @@ class LiveSpider(object):
                         if len(playUrl.strip()) > 0:
                             playJson[name] = playUrl
                             playList.append(("{},{}".format(name, playUrl) + "\n"))
-                with open(os.path.join(self.saveLivePath, "{}_live.txt".format(fileName)), "wb") as f1:
-                    f1.write("{},#genre#\n".format(fileName).encode("utf-8"))
-                    for playUrl in playList:
-                        f1.write(playUrl.encode("utf-8"))
-                    f1.write("\n".encode("utf-8"))
+                playObj[fileName] = playList
 
-                with open(os.path.join(self.saveJsonPath, "{}_live.json".format(fileName)), "wb") as f2:
-                    f2.write(json.dumps(playJson, indent=4, ensure_ascii=False).encode("utf-8"))
+        with open(os.path.join(self.saveLivePath, "live.txt".format(fileName)), "wb") as f1:
+            for key in playObj.keys():
+                f1.write("{},#genre#\n".format(key).encode("utf-8"))
+                for playUrl in playObj[key]:
+                    f1.write(playUrl.encode("utf-8"))
+                f1.write("\n".encode("utf-8"))
+
+        with open(os.path.join(self.saveJsonPath, "live.json".format(fileName)), "wb") as f2:
+                f2.write(json.dumps(playJson, indent=4, ensure_ascii=False).encode("utf-8"))
 
     def getParams(self, name):
         return {"search": f"{name}", "Submit": " "}
