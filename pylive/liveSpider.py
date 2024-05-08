@@ -18,7 +18,7 @@ from pylive.mp4Info import Mp4Info
 import threading
 import json
 
-JadeLog = JadeLogging("log", Level="INFO")
+JadeLog = JadeLogging("log", Level="DEBUG")
 
 
 class MyThread(threading.Thread):
