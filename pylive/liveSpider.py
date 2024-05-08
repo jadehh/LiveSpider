@@ -260,7 +260,7 @@ class LiveSpider(object):
 
     def parseXML(self, name, html, m3u8List):
         root = etree.HTML(html)
-        result_divs = root.xpath("//div[@class='result']")
+        result_divs = root.xpath("//div[@class='resultplus']")
         for div in result_divs:
             a = div.xpath(".//a/div")
             for element in div.xpath(".//tba"):
