@@ -278,6 +278,7 @@ class LiveSpider(object):
                                  data=self.getParams(name), cookies=cookies, verify=False)
             if response:
                 self.parseXML(name, response.text, m3u8List)
+        JadeLog.INFO(m3u8List)
         return self.selectBestUrl(name, m3u8List)
 
     def run(self):
