@@ -4,7 +4,7 @@ on:
   - cron: 0 16 * * *
   workflow_dispatch:
 jobs:
-  build:
+  Spider:
     runs-on: ubuntu-latest
     env:
       TZ: Asia/Shanghai
