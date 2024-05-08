@@ -73,7 +73,7 @@ class LiveSpider(object):
                     if name:
                         playUrl = self.spiderSearch(name)
                         if len(playUrl.strip()) > 0:
-                            playJson[name] = playUrl
+                            playJson[name.lower()] = playUrl
                             playList.append(("{},{}".format(name, playUrl) + "\n"))
                 playObj[fileName] = playList
 
