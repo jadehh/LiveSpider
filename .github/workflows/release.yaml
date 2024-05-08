@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 jobs:
   Spider:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     env:
       TZ: Asia/Shanghai
     permissions:
@@ -27,8 +27,8 @@ jobs:
 
       - name:  Commit Live Config files
         run: |
-          git config --global user.email "jadehh@live.com"
-          git config --global user.name "jadehh"
+          git config --global user.name ${{ secrets.GIT_USER_NAME }}
+          git config --global user.email ${{ secrets.GIT_USER_EMAIL }}
           git add json
           git add live 
           commit_msg="* 更新直播源"
@@ -42,4 +42,4 @@ jobs:
           branch: main
           force: true
         env:
-          GITHUB_ACTOR: jadehh
+          GITHUB_ACTOR: ${{ secrets.GIT_ACTOR }}
