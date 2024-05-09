@@ -134,7 +134,7 @@ class LiveSpider(object):
     def tsGet(self, url):
         try:
             start = time.time()
-            res = requests.get(url, verify=False, stream=True)
+            res = requests.get(url, stream=True)
             res.raise_for_status()
             body = []
             for chunk in res.iter_content(1024):  # Adjust this value to provide more or less granularity.
