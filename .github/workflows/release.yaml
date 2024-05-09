@@ -1,7 +1,7 @@
 name: Live Spider
 on:
   schedule:
-  - cron: 0 16 * * *
+  - cron: 0 16 * * *  #  分钟（0） 小时（0） 日（*） 月（*） 星期几（*）
   workflow_dispatch:
 jobs:
   Spider:
