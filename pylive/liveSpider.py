@@ -8,6 +8,7 @@
 # @Desc     : 直播爬虫
 import os
 import time
+import urllib.parse
 
 import m3u8
 import requests
@@ -44,7 +45,10 @@ class LiveSpider(object):
         self.timeout = 3
         self.maxSize = 1024 * 1024 * 5
         self.headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"}
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+            "host":"tonkiang.us",
+            "Connection":"keep-alive"
+        }
         self.tmpPath = CreateSavePath("tmp")
         self.saveJsonPath = CreateSavePath("json")
         self.saveLivePath = CreateSavePath("live")
@@ -274,6 +278,7 @@ class LiveSpider(object):
         m3u8List = []
         for i in range(self.maxPage):
             time.sleep(self.sleepTime)
+            JadeLog.INFO(self.siteUrl + "/?page={}&ch={}".format(i+1,name))
             response = self.fetch(self.siteUrl + "/?page={}&ch={}".format(i+1,name), headers=self.headers,
                                  data=None, verify=True)
             if response:
