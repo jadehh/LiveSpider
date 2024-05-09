@@ -40,7 +40,7 @@ class LiveSpider(object):
         self.maxReconnect = 3
         self.maxTsDownloadTimes = 1
         self.reconnect = 0
-        self.sleepTime = 3
+        self.sleepTime = 1
         self.timeout = 3
         self.maxSize = 1024 * 1024 * 5
         self.headers = {
@@ -96,7 +96,7 @@ class LiveSpider(object):
             f2.write(json.dumps(playJson, indent=4, ensure_ascii=False).encode("utf-8"))
 
     def getParams(self, name):
-        return {"search": f"{name}", "Submit": " "}
+        return {"search": name, "Submit": " "}
 
     def fetch(self, url, headers, data, verify):
         try:
@@ -117,9 +117,9 @@ class LiveSpider(object):
             JadeLog.ERROR("Get请求失败")
             raise e
 
-    def post(self, url, headers, data, cookies, verify):
+    def post(self, url, headers, data, verify):
         try:
-            res = requests.post(url, headers=headers, data=data, cookies=cookies, verify=verify)
+            res = requests.post(url, headers=headers, data=data, verify=verify)
             if res.status_code == 200:
                 self.reconnect = 0
                 return res
@@ -127,7 +127,7 @@ class LiveSpider(object):
                 time.sleep(self.sleepTime)
                 self.reconnect = self.reconnect + 1
                 JadeLog.WARNING("Post请求失败,尝试第{}次重连".format(self.reconnect))
-                return self.post(url, headers, data, cookies, verify)
+                return self.post(url, headers, data, verify)
             else:
                 self.reconnect = 0
                 JadeLog.ERROR("Post请求失败,超过最大重连次数,请检查连接:{}".format(url))
@@ -272,12 +272,11 @@ class LiveSpider(object):
         return m3u8List
 
     def spiderSearch(self, name):
-        cookies = self.getCookie(name)
         m3u8List = []
         for i in range(self.maxPage):
             time.sleep(self.sleepTime)
             response = self.post(self.siteUrl + f"/?page={i + 1}&s={name}", headers=self.headers,
-                                 data=self.getParams(name), cookies=cookies, verify=False)
+                                 data=self.getParams(name), verify=False)
             if response:
                 self.parseXML(name, response.text, m3u8List)
             with open("live/{}_{}.html".format(name,i),"wb") as f:
