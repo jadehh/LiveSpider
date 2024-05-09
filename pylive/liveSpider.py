@@ -254,8 +254,6 @@ class LiveSpider(object):
             response = self.fetch(self.siteUrl , headers=self.headers,params={"pg":i+1,"ch":name}, verify=True)
             if response:
                 self.parseXML(name, response.text, m3u8List)
-            with open("live/{}_{}.html".format(name, i), "wb") as f:
-                f.write(response.content)
         return self.selectBestUrl(name, m3u8List)
 
     def run(self):
