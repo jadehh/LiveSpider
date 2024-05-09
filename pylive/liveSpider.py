@@ -119,6 +119,7 @@ class LiveSpider(object):
 
     def post(self, url, headers, data, verify):
         try:
+            JadeLog.INFO("url:{},headers:{},data:{}".format(url,headers,data))
             res = requests.post(url, headers=headers, data=data, verify=verify)
             if res.status_code == 200:
                 self.reconnect = 0
@@ -267,7 +268,7 @@ class LiveSpider(object):
             a = div.xpath(".//a/div")
             for element in div.xpath(".//tba"):
                 if element.text is not None:
-                    if (a[0].text.strip().lower().replace("-","").replace("K","") == name.lower()):
+                    if (a[0].text.strip().lower().replace("-", "").replace("K", "") == name.lower()):
                         m3u8List.append(element.text.strip())
         return m3u8List
 
@@ -275,11 +276,11 @@ class LiveSpider(object):
         m3u8List = []
         for i in range(self.maxPage):
             time.sleep(self.sleepTime)
-            response = self.post(self.siteUrl + f"/?page={i + 1}&s={name}", headers=self.headers,
-                                 data=self.getParams(name), verify=False)
+            response = self.post(self.siteUrl + "?page={}&s={}".format(i+1,name), headers=self.headers,
+                                 data=self.getParams(name), verify=True)
             if response:
                 self.parseXML(name, response.text, m3u8List)
-            with open("live/{}_{}.html".format(name,i),"wb") as f:
+            with open("live/{}_{}.html".format(name, i), "wb") as f:
                 f.write(response.content)
         return self.selectBestUrl(name, m3u8List)
 
