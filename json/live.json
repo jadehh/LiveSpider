@@ -1,4 +1,4 @@
 {
-    "cctv1": "http://175.21.170.6:5000/hls/1/index.m3u8",
-    "北京卫视": "http://60.190.128.194:8888/newlive/live/hls/19/live.m3u8"
+    "cctv1": "http://64.140.167.170:8080/live/fjydcctv1/hls.m3u8",
+    "北京卫视": "http://64.140.167.170:8080/live/bjws/hls.m3u8"
 }
