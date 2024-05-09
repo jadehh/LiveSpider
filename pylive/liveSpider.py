@@ -9,7 +9,6 @@
 import os
 import time
 import urllib.parse
-
 import m3u8
 import requests
 from lxml import etree
@@ -18,7 +17,8 @@ from m3u8 import M3U8
 from pylive.mp4Info import Mp4Info
 import threading
 import json
-
+import logging
+requests.packages.urllib3.disable_warnings()
 JadeLog = JadeLogging("log", Level="INFO")
 
 
@@ -110,7 +110,7 @@ class LiveSpider(object):
                 time.sleep(self.sleepTime)
                 self.reconnect = self.reconnect + 1
                 JadeLog.WARNING("Get请求失败,尝试第{}次重连".format(self.reconnect))
-                return self.fetch(url, headers, data, verify)
+                return self.fetch(url, headers, params, verify)
             else:
                 self.reconnect = 0
                 JadeLog.ERROR("Get请求失败,超过最大重连次数,请检查连接:{}".format(url))
