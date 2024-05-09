@@ -82,6 +82,8 @@ class LiveSpider(object):
                                 str(content, encoding="utf-8").strip(), playUrl)
                             playList.append(writeContent)
                             index = index + 1
+                    break
+                break
                 playObj[fileName] = playList
 
         with open(os.path.join(self.saveLivePath, "live.txt".format(fileName)), "wb") as f1:
@@ -259,7 +261,6 @@ class LiveSpider(object):
         return maxQulityUrl
 
     def parseXML(self, name, html, m3u8List):
-        JadeLog.INFO(html)
         root = etree.HTML(html)
         result_divs = root.xpath("//div[@class='resultplus']")
         for div in result_divs:
@@ -279,7 +280,8 @@ class LiveSpider(object):
                                  data=self.getParams(name), cookies=cookies, verify=False)
             if response:
                 self.parseXML(name, response.text, m3u8List)
-        JadeLog.INFO(m3u8List)
+            with open("live/{}_{}.html".format(name,i),"wb") as f:
+                f.write(response.content)
         return self.selectBestUrl(name, m3u8List)
 
     def run(self):
