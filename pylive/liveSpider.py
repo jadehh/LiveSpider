@@ -100,9 +100,9 @@ class LiveSpider(object):
     def getParams(self, name):
         return {"search": name, "Submit": " "}
 
-    def fetch(self, url, headers, data, verify):
+    def fetch(self, url, headers, params, verify):
         try:
-            res = requests.get(url, headers=headers, data=data, verify=verify)
+            res = requests.get(url, headers=headers, params=params, verify=verify)
             if res.status_code == 200:
                 self.reconnect = 0
                 return res
@@ -117,26 +117,6 @@ class LiveSpider(object):
                 return None
         except Exception as e:
             JadeLog.ERROR("Get请求失败")
-            raise e
-
-    def post(self, url, headers, data, verify):
-        try:
-            JadeLog.INFO("url:{},headers:{},data:{}".format(url,headers,data))
-            res = requests.post(url, headers=headers, data=data, verify=verify)
-            if res.status_code == 200:
-                self.reconnect = 0
-                return res
-            elif res.status_code != 200 and self.reconnect < self.maxReconnect:
-                time.sleep(self.sleepTime)
-                self.reconnect = self.reconnect + 1
-                JadeLog.WARNING("Post请求失败,尝试第{}次重连".format(self.reconnect))
-                return self.post(url, headers, data, verify)
-            else:
-                self.reconnect = 0
-                JadeLog.ERROR("Post请求失败,超过最大重连次数,请检查连接:{}".format(url))
-                return None
-        except Exception as e:
-            JadeLog.ERROR("Post请求失败")
             raise e
 
     def m3u8Get(self, url):
@@ -165,13 +145,6 @@ class LiveSpider(object):
         except Exception as e:
             JadeLog.ERROR("Get请求失败,失败原因为:{}".format(e))
 
-    def getCookie(self, name):
-        res = self.fetch(self.siteUrl, headers=self.headers, data=self.getParams(name), verify=False)
-        if res:
-            return res.cookies
-        else:
-            JadeLog.ERROR("名称为:{},获取COOKIE失败".format(name))
-            return None
 
     def downloadTsUrl(self, segments):
         ## 计算下载速度,和 ts文件的分辨率
@@ -278,9 +251,7 @@ class LiveSpider(object):
         m3u8List = []
         for i in range(self.maxPage):
             time.sleep(self.sleepTime)
-            JadeLog.INFO(self.siteUrl + "/?page={}&ch={}".format(i+1,name))
-            response = self.fetch(self.siteUrl + "/?page={}&ch={}".format(i+1,name), headers=self.headers,
-                                 data=None, verify=True)
+            response = self.fetch(self.siteUrl , headers=self.headers,params={"pg":i+1,"ch":name}, verify=True)
             if response:
                 self.parseXML(name, response.text, m3u8List)
             with open("live/{}_{}.html".format(name, i), "wb") as f:
