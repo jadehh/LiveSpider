@@ -36,7 +36,7 @@ class LiveSpider(object):
     def __init__(self):
         self.siteUrl = "http://tonkiang.us"
         self.liveRoomPath = "liveRoom"
-        self.maxPage = 3
+        self.maxPage = 1
         self.maxReconnect = 3
         self.maxTsDownloadTimes = 1
         self.reconnect = 0
@@ -82,8 +82,6 @@ class LiveSpider(object):
                                 str(content, encoding="utf-8").strip(), playUrl)
                             playList.append(writeContent)
                             index = index + 1
-                    break
-                break
                 playObj[fileName] = playList
 
         with open(os.path.join(self.saveLivePath, "live.txt".format(fileName)), "wb") as f1:
@@ -276,8 +274,8 @@ class LiveSpider(object):
         m3u8List = []
         for i in range(self.maxPage):
             time.sleep(self.sleepTime)
-            response = self.post(self.siteUrl + "?page={}&s={}".format(i+1,name), headers=self.headers,
-                                 data=self.getParams(name), verify=True)
+            response = self.fetch(self.siteUrl + "/?page={}&ch={}".format(i+1,name), headers=self.headers,
+                                 data=None, verify=True)
             if response:
                 self.parseXML(name, response.text, m3u8List)
             with open("live/{}_{}.html".format(name, i), "wb") as f:
