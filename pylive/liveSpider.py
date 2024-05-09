@@ -37,13 +37,13 @@ class LiveSpider(object):
     def __init__(self):
         self.siteUrl = "http://tonkiang.us"
         self.liveRoomPath = "liveRoom"
-        self.maxPage = 1
+        self.maxPage = 3
         self.maxReconnect = 3
-        self.maxTsDownloadTimes = 1
+        self.maxTsDownloadTimes = 3
         self.reconnect = 0
         self.sleepTime = 1
         self.timeout = 3
-        self.maxSize = 1024 * 1024 * 5
+        self.maxSize = 1024 * 1024 * 10
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
             "host":"tonkiang.us",
