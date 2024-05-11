@@ -277,8 +277,6 @@ class LiveSpider(object):
             time.sleep(self.sleepTime)
             url = f"http://tonkiang.us/?page={i + 1}&s={name}"
             response = self.post(self.siteUrl ,self.cookies, headers=self.headers,data=self.getParams(name), verify=False)
-            with open("live/{}_{}.html".format(name,i),"wb") as f:
-                f.write(response.content)
             if response:
                 self.parseXML(name, response.text, m3u8List)
         return self.selectBestUrl(name, m3u8List)
