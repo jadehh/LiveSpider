@@ -1,1 +1,4 @@
-{}
+{
+    "cctv1": "http://64.140.167.170:8080/live/fjydcctv1/hls.m3u8",
+    "北京卫视": "http://64.140.167.170:8080/live/bjws/hls.m3u8"
+}

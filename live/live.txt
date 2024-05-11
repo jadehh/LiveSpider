@@ -1,1 +1,5 @@
 #EXTM3U
+#EXTINF:-1 tvg-id="1" tvg-name="CCTV1" tvg-logo="https://epg.112114.xyz/logo/CCTV1.png" group-title="央视",CCTV1
+video://http://64.140.167.170:8080/live/fjydcctv1/hls.m3u8
+#EXTINF:-1 tvg-id="2" tvg-name="北京卫视" tvg-logo="https://epg.112114.xyz/logo/北京卫视.png" group-title="卫视",北京卫视
+video://http://64.140.167.170:8080/live/bjws/hls.m3u8
