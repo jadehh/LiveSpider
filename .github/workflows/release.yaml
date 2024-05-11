@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 jobs:
   Spider:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     env:
       TZ: Asia/Shanghai
     permissions:

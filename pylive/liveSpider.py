@@ -53,7 +53,9 @@ class LiveSpider(object):
         self.saveJsonPath = CreateSavePath("json")
         self.saveLivePath = CreateSavePath("live")
         self.sortKeys = ["央视", "卫视", "港澳台"]
+        self.cookies = self.getCookies()
         super().__init__()
+
 
     def sortFileList(self, fileList):
         newFileList = []
@@ -118,6 +120,26 @@ class LiveSpider(object):
         except Exception as e:
             JadeLog.ERROR("Get请求失败")
             raise e
+
+    def post(self, url,cookies, headers, data, verify):
+        try:
+            res = requests.post(url, cookies=cookies,headers=headers, data=data, verify=verify)
+            if res.status_code == 200:
+                self.reconnect = 0
+                return res
+            elif res.status_code != 200 and self.reconnect < self.maxReconnect:
+                time.sleep(self.sleepTime)
+                self.reconnect = self.reconnect + 1
+                JadeLog.WARNING("Post请求失败,尝试第{}次重连".format(self.reconnect))
+                return self.post(url,cookies, headers, data, verify)
+            else:
+                self.reconnect = 0
+                JadeLog.ERROR("Post请求失败,超过最大重连次数,请检查连接:{}".format(url))
+                return None
+        except Exception as e:
+            JadeLog.ERROR("Post请求失败")
+            raise e
+
 
     def m3u8Get(self, url):
         try:
@@ -246,12 +268,17 @@ class LiveSpider(object):
                     if (a[0].text.strip().lower().replace("-", "").replace("K", "") == name.lower()):
                         m3u8List.append(element.text.strip())
         return m3u8List
-
+    def getCookies(self):
+        res = self.fetch(self.siteUrl,headers=self.headers,params=None,verify=True)
+        return res.cookies
     def spiderSearch(self, name):
         m3u8List = []
         for i in range(self.maxPage):
             time.sleep(self.sleepTime)
-            response = self.fetch(self.siteUrl , headers=self.headers,params={"pg":i+1,"ch":name}, verify=True)
+            url = f"http://tonkiang.us/?page={i + 1}&s={name}"
+            response = self.post(self.siteUrl ,self.cookies, headers=self.headers,data=self.getParams(name), verify=False)
+            with open("live/{}_{}.html".format(name,i),"wb") as f:
+                f.write(response.content)
             if response:
                 self.parseXML(name, response.text, m3u8List)
         return self.selectBestUrl(name, m3u8List)
