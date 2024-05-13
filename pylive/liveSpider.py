@@ -52,8 +52,8 @@ class LiveSpider(object):
         self.tmpPath = CreateSavePath("tmp")
         self.saveJsonPath = CreateSavePath("json")
         self.saveLivePath = CreateSavePath("live")
+        self.saveXmlPath = CreateSavePath("xml")
         self.sortKeys = ["央视", "卫视", "港澳台"]
-        self.cookies = self.getCookies()
         super().__init__()
 
 
@@ -268,18 +268,22 @@ class LiveSpider(object):
                     if (a[0].text.strip().lower().replace("-", "").replace("K", "") == name.lower()):
                         m3u8List.append(element.text.strip())
         return m3u8List
-    def getCookies(self):
-        res = self.fetch(self.siteUrl,headers=self.headers,params=None,verify=True)
-        return res.cookies
+
     def spiderSearch(self, name):
         m3u8List = []
         for i in range(self.maxPage):
             time.sleep(self.sleepTime)
-            url = f"http://tonkiang.us/?page={i + 1}&s={name}"
-            response = self.post(self.siteUrl ,self.cookies, headers=self.headers,data=self.getParams(name), verify=False)
+            self.headers["Cookie"] = "_ga=GA1.1.1943321878.1715060306; HstCfa4853344=1715060306399; HstCmu4853344=1715060306399; HstCnv4853344=6; HstCns4853344=7; REFERER=15499174; _ga_JNMLRB3QLF=GS1.1.1715562776.9.1.1715562787.0.0.0; HstCla4853344=1715562787693; HstPn4853344=2; HstPt4853344=20"
+            url = f"http://tonkiang.us/?page={i + 1}&channel={name}"
+            response = requests.get(url,headers=self.headers)
             if response:
+                self.writeXml("{}_{}".format(name,i),response.content)
                 self.parseXML(name, response.text, m3u8List)
         return self.selectBestUrl(name, m3u8List)
+
+    def writeXml(self,name,content):
+        with open(os.path.join(self.saveXmlPath,name + ".xml"),"wb") as f:
+            f.write(content)
 
     def run(self):
         self.getSearchResult()
