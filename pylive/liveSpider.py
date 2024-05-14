@@ -37,7 +37,7 @@ class LiveSpider(object):
     def __init__(self):
         self.siteUrl = "http://tonkiang.us"
         self.liveRoomPath = "liveRoom"
-        self.maxPage = 1
+        self.maxPage = 3
         self.maxReconnect = 3
         self.maxTsDownloadTimes = 3
         self.reconnect = 0
