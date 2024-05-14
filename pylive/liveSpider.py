@@ -281,10 +281,10 @@ class LiveSpider(object):
         for i in range(self.maxPage):
             if i > 0:
                 url = self.siteUrl + "/?page={}&channel={}".format(i+1,name)
-                response = self.fetch(url,self.postCookies,None,None,verify=True)
+                response = self.fetch(url,self.cookies,None,None,verify=True)
             else:
                 response = self.post(self.siteUrl,cookies=self.cookies,headers=self.headers,data={"saerch":name,"Submit":"","name":"NjU1Nzkz","city":"grade-w-gezhou"},verify=True)
-                self.postCookies = response.cookies
+                self.cookies = response.cookies
             if response:
                 self.writeXml("{}_{}".format(name,i),response.content)
                 self.parseXML(name, response.text, m3u8List)
