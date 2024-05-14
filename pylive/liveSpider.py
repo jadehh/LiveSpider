@@ -91,14 +91,16 @@ class LiveSpider(object):
                             index = index + 1
                 playObj[fileName] = playList
 
-        with open(os.path.join(self.saveLivePath, "live.txt".format(fileName)), "wb") as f1:
-            f1.write("#EXTM3U\n".encode("utf-8"))
-            for key in playObj.keys():
-                for playUrl in playObj[key]:
-                    f1.write(playUrl.encode("utf-8"))
+        if len(playObj.keys()) > 0:
+            with open(os.path.join(self.saveLivePath, "live.txt".format(fileName)), "wb") as f1:
+                f1.write("#EXTM3U\n".encode("utf-8"))
+                for key in playObj.keys():
+                    for playUrl in playObj[key]:
+                        f1.write(playUrl.encode("utf-8"))
 
-        with open(os.path.join(self.saveJsonPath, "live.json".format(fileName)), "wb") as f2:
-            f2.write(json.dumps(playJson, indent=4, ensure_ascii=False).encode("utf-8"))
+            with open(os.path.join(self.saveJsonPath, "live.json".format(fileName)), "wb") as f2:
+                f2.write(json.dumps(playJson, indent=4, ensure_ascii=False).encode("utf-8"))
+
 
     def getParams(self, name):
         return {"search": name, "Submit": " "}
