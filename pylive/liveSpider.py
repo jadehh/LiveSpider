@@ -37,7 +37,7 @@ class LiveSpider(object):
     def __init__(self):
         self.siteUrl = "http://tonkiang.us"
         self.liveRoomPath = "liveRoom"
-        self.maxPage = 3
+        self.maxPage = 1
         self.maxReconnect = 3
         self.maxTsDownloadTimes = 3
         self.reconnect = 0
@@ -54,6 +54,7 @@ class LiveSpider(object):
         self.saveLivePath = CreateSavePath("live")
         self.saveXmlPath = CreateSavePath("xml")
         self.sortKeys = ["央视", "卫视", "港澳台"]
+        self.cookies = self.getCookies()
         super().__init__()
 
 
@@ -102,9 +103,9 @@ class LiveSpider(object):
     def getParams(self, name):
         return {"search": name, "Submit": " "}
 
-    def fetch(self, url, headers, params, verify):
+    def fetch(self, url, cookies, headers, params, verify):
         try:
-            res = requests.get(url, headers=headers, params=params, verify=verify)
+            res = requests.get(url,cookies=cookies, headers=headers, params=params, verify=verify)
             if res.status_code == 200:
                 self.reconnect = 0
                 return res
@@ -112,7 +113,7 @@ class LiveSpider(object):
                 time.sleep(self.sleepTime)
                 self.reconnect = self.reconnect + 1
                 JadeLog.WARNING("Get请求失败,尝试第{}次重连".format(self.reconnect))
-                return self.fetch(url, headers, params, verify)
+                return self.fetch(url,cookies, headers, params, verify)
             else:
                 self.reconnect = 0
                 JadeLog.ERROR("Get请求失败,超过最大重连次数,请检查连接:{}".format(url))
@@ -120,6 +121,10 @@ class LiveSpider(object):
         except Exception as e:
             JadeLog.ERROR("Get请求失败")
             raise e
+
+    def getCookies(self):
+        res = self.fetch(self.siteUrl,None,self.headers,None,True)
+        return res.cookies
 
     def post(self, url,cookies, headers, data, verify):
         try:
@@ -272,10 +277,12 @@ class LiveSpider(object):
     def spiderSearch(self, name):
         m3u8List = []
         for i in range(self.maxPage):
-            time.sleep(self.sleepTime)
-            self.headers["Cookie"] = "_ga=GA1.1.1943321878.1715060306; HstCfa4853344=1715060306399; HstCmu4853344=1715060306399; HstCnv4853344=6; HstCns4853344=7; REFERER=15499174; _ga_JNMLRB3QLF=GS1.1.1715562776.9.1.1715562787.0.0.0; HstCla4853344=1715562787693; HstPn4853344=2; HstPt4853344=20"
-            url = f"http://tonkiang.us/?page={i + 1}&channel={name}"
-            response = requests.get(url,headers=self.headers)
+            if i > 0:
+                url = self.siteUrl + "/?page={}&channel={}".format(i+1,name)
+                response = self.fetch(url,self.postCookies,None,None,verify=True)
+            else:
+                response = self.post(self.siteUrl,cookies=self.cookies,headers=self.headers,data={"saerch":name,"Submit":"","name":"NjU1Nzkz","city":"grade-w-gezhou"},verify=True)
+                self.postCookies = response.cookies
             if response:
                 self.writeXml("{}_{}".format(name,i),response.content)
                 self.parseXML(name, response.text, m3u8List)
@@ -289,7 +296,3 @@ class LiveSpider(object):
         self.getSearchResult()
         JadeLog.release()
 
-
-if __name__ == '__main__':
-    liveSpider = LiveSpider()
-    liveSpider.getSearchList()
