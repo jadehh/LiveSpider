@@ -35,8 +35,8 @@ jobs:
 
       - name:  Commit Live Config files
         run: |
-          git config --global user.name ${{ secrets.GT_EMAIL }}
-          git config --global user.email ${{ secrets.GH_ACTOR}}
+          git config --global user.emai ${{ secrets.GT_EMAIL }}
+          git config --global user.name ${{ secrets.GH_ACTOR}}
           git add json
           git add live 
           commit_msg="* 更新直播源"
