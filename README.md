@@ -12,4 +12,14 @@ pip install requirements.txt
 python main.py
 ```
 
-> 本地运行,Workflows无法获取直播链接
+> 本地运行,也可以通过Workflows运行
+
+## Workflows
+
+需要再Actions中添加以下参数
+
+```bash
+GT_EMAIL:邮箱地址
+GH_ACTOR:作者名
+```
+> 每天北京时间00:00开始自动同步
