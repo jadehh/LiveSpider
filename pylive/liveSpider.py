@@ -44,17 +44,19 @@ class LiveSpider(object):
         self.sleepTime = 1
         self.timeout = 3
         self.maxSize = 1024 * 1024 * 10
-        self.headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-            "host":"tonkiang.us",
-            "Connection":"keep-alive"
-        }
+
         self.tmpPath = CreateSavePath("tmp")
         self.saveJsonPath = CreateSavePath("json")
         self.saveLivePath = CreateSavePath("live")
         self.saveXmlPath = CreateSavePath("xml")
         self.sortKeys = ["央视", "卫视", "港澳台"]
-        self.cookies = self.getCookies()
+        self.cookies = "_ga=GA1.1.561799003.1715167785; HstCfa4853344=1715167785578; HstCmu4853344=1715167785578; HstCnv4853344=4; HstCns4853344=6; REFERER=16103974; HstCla4853344=1716121086033; HstPn4853344=3; HstPt4853344=29; _ga_JNMLRB3QLF=GS1.1.1716121076.4.1.1716122164.0.0.0"
+        self.headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+            "host":"tonkiang.us",
+            "Connection":"keep-alive",
+            "Cookie":self.cookies
+        }
         super().__init__()
 
 
@@ -279,12 +281,8 @@ class LiveSpider(object):
     def spiderSearch(self, name):
         m3u8List = []
         for i in range(self.maxPage):
-            if i > 0:
-                url = self.siteUrl + "/?page={}&channel={}".format(i+1,name)
-                response = self.fetch(url,self.cookies,None,None,verify=True)
-            else:
-                response = self.post(self.siteUrl,cookies=self.cookies,headers=self.headers,data={"saerch":name,"Submit":"","name":"NjU1Nzkz","city":"grade-w-gezhou"},verify=True)
-                self.cookies = response.cookies
+            url = self.siteUrl + "/?page={}&channel={}".format(i+1,name)
+            response = self.fetch(url,None,self.headers,None,verify=True)
             if response:
                 self.writeXml("{}_{}".format(name,i),response.content)
                 self.parseXML(name, response.text, m3u8List)
