@@ -49,14 +49,14 @@ class LiveSpider(object):
             "host":"tonkiang.us",
             "Accept": "*/*",
             "Connection":"keep-alive",
-            "Content-Type": "application/x-www-form-urlencoded"
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Cookie":"_ga=GA1.1.561799003.1715167785; HstCfa4853344=1715167785578; HstCmu4853344=1715167785578;; HstCnv4853344=5; HstCns4853344=8; REFERER=16363174; HstCla4853344=1716384255718; HstPn4853344=2; HstPt4853344=32; _ga_JNMLRB3QLF=GS1.1.1716384250.5.1.1716384258.0.0.0"
         }
         self.tmpPath = CreateSavePath("tmp")
         self.saveJsonPath = CreateSavePath("json")
         self.saveLivePath = CreateSavePath("live")
         self.saveXmlPath = CreateSavePath("xml")
         self.sortKeys = ["央视", "卫视", "港澳台"]
-        self.cookies = self.getCookies()
         super().__init__()
 
 
@@ -283,11 +283,9 @@ class LiveSpider(object):
         for i in range(self.maxPage):
             if i > 0:
                 url = self.siteUrl + "/?page={}&channel={}".format(i+1,name)
-                self.headers["Cookie"] = "REFERER" + self.cookiesStr.split(", REFERER")[-1]
-                response = self.fetch(url,self.cookies,self.headers,None,verify=True)
+                response = self.fetch(url,None,self.headers,None,verify=True)
             else:
-                response = self.post(self.siteUrl,self.cookies,headers=self.headers,data={"seerch":name,"Submit":"","city":"MTE0NjIxNDA4NjIxeHh4"},verify=True)
-                self.cookiesStr = response.headers.get("set-cookie")
+                response = self.post(self.siteUrl,None,headers=self.headers,data={"seerch":name,"Submit":"","city":"MTE0NjIxNDA4NjIxeHh4"},verify=True)
             if response:
                 self.writeXml("{}_{}".format(name,i),response.content)
                 self.parseXML(name, response.text, m3u8List)
