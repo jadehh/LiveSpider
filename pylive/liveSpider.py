@@ -283,11 +283,11 @@ class LiveSpider(object):
         for i in range(self.maxPage):
             if i > 0:
                 url = self.siteUrl + "/?page={}&channel={}".format(i+1,name)
-                self.headers["Cookie"] = "REFERER" + self.cookies.split(", REFERER")[-1]
-                response = self.fetch(url,None,self.headers,None,verify=True)
+                self.headers["Cookie"] = "REFERER" + self.cookiesStr.split(", REFERER")[-1]
+                response = self.fetch(url,self.cookies,self.headers,None,verify=True)
             else:
-                response = self.post(self.siteUrl,cookies=None,headers=self.headers,data={"seerch":name,"Submit":"","city":"MTE0NjIxNDA4NjIxeHh4"},verify=True)
-                self.cookies = response.headers.get("set-cookie")
+                response = self.post(self.siteUrl,cookies=self.cookies,headers=self.headers,data={"seerch":name,"Submit":"","city":"MTE0NjIxNDA4NjIxeHh4"},verify=True)
+                self.cookiesStr = response.headers.get("set-cookie")
             if response:
                 self.writeXml("{}_{}".format(name,i),response.content)
                 self.parseXML(name, response.text, m3u8List)
