@@ -47,7 +47,9 @@ class LiveSpider(object):
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
             "host":"tonkiang.us",
-            "Connection":"keep-alive"
+            "Accept": "*/*",
+            "Connection":"keep-alive",
+            "Content-Type": "application/x-www-form-urlencoded"
         }
         self.tmpPath = CreateSavePath("tmp")
         self.saveJsonPath = CreateSavePath("json")
@@ -281,10 +283,11 @@ class LiveSpider(object):
         for i in range(self.maxPage):
             if i > 0:
                 url = self.siteUrl + "/?page={}&channel={}".format(i+1,name)
-                response = self.fetch(url,self.cookies,None,None,verify=True)
+                self.headers["Cookie"] = "REFERER" + self.cookies.split(", REFERER")[-1]
+                response = self.fetch(url,None,self.headers,None,verify=True)
             else:
-                response = self.post(self.siteUrl,cookies=self.cookies,headers=self.headers,data={"saerch":name,"Submit":"","name":"NjU1Nzkz","city":"grade-w-gezhou"},verify=True)
-                self.cookies = response.cookies
+                response = self.post(self.siteUrl,cookies=None,headers=self.headers,data={"seerch":name,"Submit":"","city":"MTE0NjIxNDA4NjIxeHh4"},verify=True)
+                self.cookies = response.headers.get("set-cookie")
             if response:
                 self.writeXml("{}_{}".format(name,i),response.content)
                 self.parseXML(name, response.text, m3u8List)
