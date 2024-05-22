@@ -286,7 +286,7 @@ class LiveSpider(object):
                 self.headers["Cookie"] = "REFERER" + self.cookiesStr.split(", REFERER")[-1]
                 response = self.fetch(url,self.cookies,self.headers,None,verify=True)
             else:
-                response = self.post(self.siteUrl,cookies=self.cookies,headers=self.headers,data={"seerch":name,"Submit":"","city":"MTE0NjIxNDA4NjIxeHh4"},verify=True)
+                response = self.post(self.siteUrl,self.cookies,headers=self.headers,data={"seerch":name,"Submit":"","city":"MTE0NjIxNDA4NjIxeHh4"},verify=True)
                 self.cookiesStr = response.headers.get("set-cookie")
             if response:
                 self.writeXml("{}_{}".format(name,i),response.content)
